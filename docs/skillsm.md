@@ -128,7 +128,7 @@ Commit messages use the Angular format `type(scope): subject`. Use an imperative
 
 The `Publish to npm` workflow runs when a stable GitHub Release is published. It checks out that release's tag, requires `v<package.json version>`, checks both lockfile version fields, and runs `npm publish --access public`. The existing `prepublishOnly` hook runs syntax checks and the full test suite before upload.
 
-The workflow uses GitHub-hosted Ubuntu, Node.js 24, npm 11, and `id-token: write` for OIDC. It does not use a saved npm token. Releases are serialized, and publishing a draft, prerelease, or standalone tag does not upload a package.
+The workflow uses GitHub-hosted Ubuntu, Node.js 24, npm 11, and `id-token: write` for OIDC. It does not use a saved npm token. Releases are serialized. Saving a draft, publishing a prerelease, or pushing a standalone tag does not upload a package. Publishing a previously drafted stable Release does trigger the workflow.
 
 Configure the trusted publisher once on npm for package `skillsm`:
 
