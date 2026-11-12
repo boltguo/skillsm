@@ -115,6 +115,21 @@ To update the CLI itself, run `npm install -g skillsm@latest`.
 
 Commit messages follow the Angular convention: `type(scope): subject`, for example `feat(sync): add saved skill selection`.
 
+## Releases
+
+Publishing a stable [GitHub Release](https://github.com/boltguo/skillsm/releases) triggers `.github/workflows/publish.yml`. The workflow verifies that the tag matches `package.json` and the lockfile, then runs the checks and tests through `prepublishOnly` before publishing to npm.
+
+For the first functional release, publish a Release for `v0.1.0` from a commit containing this workflow. For later versions:
+
+```bash
+npm version patch -m "chore(release): %s"
+git push origin main --follow-tags
+```
+
+Then publish a GitHub Release for the new tag. Pushing a tag alone, saving a draft, or publishing a prerelease does not publish to npm. Each npm version can only be published once.
+
+Authentication uses [npm Trusted Publishing](https://docs.npmjs.com/trusted-publishers/) with GitHub OIDC. The package's trusted publisher must identify `boltguo/skillsm` and the workflow filename `publish.yml`. No `NPM_TOKEN` secret is required.
+
 ## License
 
 [Apache-2.0](LICENSE)

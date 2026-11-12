@@ -123,3 +123,28 @@ npm publish --access public
 Tests use temporary homes and local Git fixtures. The prepublish hook runs syntax checks and tests. Skills are fetched at runtime and are not bundled with the CLI.
 
 Commit messages use the Angular format `type(scope): subject`. Use an imperative subject without a trailing period. The repository is [boltguo/skillsm](https://github.com/boltguo/skillsm).
+
+## Automatic npm publishing
+
+The `Publish to npm` workflow runs when a stable GitHub Release is published. It checks out that release's tag, requires `v<package.json version>`, checks both lockfile version fields, and runs `npm publish --access public`. The existing `prepublishOnly` hook runs syntax checks and the full test suite before upload.
+
+The workflow uses GitHub-hosted Ubuntu, Node.js 24, npm 11, and `id-token: write` for OIDC. It does not use a saved npm token. Releases are serialized, and publishing a draft, prerelease, or standalone tag does not upload a package.
+
+Configure the trusted publisher once on npm for package `skillsm`:
+
+- Provider: GitHub Actions
+- Repository owner: `boltguo`
+- Repository: `skillsm`
+- Workflow filename: `publish.yml`
+- Permission: publish
+- Environment: unset
+
+The equivalent authenticated CLI command is:
+
+```bash
+npm trust github skillsm --repo boltguo/skillsm --file publish.yml --allow-publish
+```
+
+For `v0.1.0`, use a commit that includes this workflow. For subsequent releases, run `npm version patch -m "chore(release): %s"` (or `minor` / `major`), push the commit and tag, then publish the corresponding GitHub Release. This keeps version commits in Angular format. A release tag must exactly match the package version.
+
+Check the workflow run for the result. If a run failed before upload, fix the cause and rerun it. Once a version is published, use a new version for further changes; npm does not allow overwriting an existing version.
